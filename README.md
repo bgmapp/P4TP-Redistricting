@@ -7,7 +7,7 @@ This repository contains 2 Widgets that can be deployed with
 explore how boundaries might be drawn for various purposes. 
 
 <video muted controls height="250px">
-    <source src="https://github.com/bgmapp/P4TP-Redistricting/blob/jwmazzi/guide/guide.mp4?raw=true" />
+    <source src="https://itsy-bitsy.io/pftp/guide.mp4" />
 </video>
 
 ## Getting Started
