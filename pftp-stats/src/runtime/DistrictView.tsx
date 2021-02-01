@@ -170,14 +170,19 @@ export default class DistrictView extends BaseWidget {
                 this.setState({
                     uniqueNames: uniqueNames,
                     averageCompaction: 0,
-                    averageDiversity: 0
+                    averageDiversity: 0,
+                    chartData: []
                 })
 
             } else {
 
-                let where = `dist_name in (${uniqueNames.map(x => `'${x}'`).join(",")})`
-                let stats = await this.collectStatistics(where)
+                if (this.state.selectedValues.includes('ALL')) {
+                    var where = `dist_name in (${uniqueNames.map(x => `'${x}'`).join(",")})`
+                } else {
+                    var where = `dist_name in (${this.state.selectedValues.map(x => `'${x}'`).join(",")})`
+                }
 
+                let stats = await this.collectStatistics(where)
                 let chartData = await this.fetchChartRecords(where)
 
                 this.setState({

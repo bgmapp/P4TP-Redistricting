@@ -180,6 +180,8 @@ export default class DistrictEdit extends React.Component {
 
     this.setState({loading: true})
 
+    console.log(`${this.props.data.config.editDistrictsURL}/applyEdits`)
+
     fetch(`${this.props.data.config.editDistrictsURL}/applyEdits`, requestOptions)
     .then(response => response.json())
     .then(result => {

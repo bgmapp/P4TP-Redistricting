@@ -237,8 +237,6 @@ export default class Widget extends BaseWidget {
 
   onUpdate = async (event) => {
 
-    console.log('Update Fired')
-
     var valid = this.checkIntersection(event.graphics[0])
 
     if (event.state === "complete") {
@@ -283,6 +281,8 @@ export default class Widget extends BaseWidget {
   }
 
   componentDidUpdate(prevProps) {
+
+    this.districtsFL.refresh()
 
     if (this.props.submission === true) {
 
