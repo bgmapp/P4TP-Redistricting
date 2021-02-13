@@ -13,7 +13,7 @@ export default class EditModal extends React.Component {
             appElement={document.body}
             >
             <video muted controls style={{maxHeight: '500px'}}>
-                <source src="https://itsy-bitsy.io/pftp/guide.mp4" />
+                <source src="https://pftp-media.s3.amazonaws.com/guide.mp4" />
             </video>
             </Modal>
         )
