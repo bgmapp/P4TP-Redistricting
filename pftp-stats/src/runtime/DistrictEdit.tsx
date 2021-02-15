@@ -231,8 +231,11 @@ export default class DistrictEdit extends React.Component {
 
       if (!info.valid) invalidGeometries = false
 
+      console.log(info, this.props.data.activeUID)
+      let liStyle =  info.uid == this.props.data.activeUID ? {borderLeft: '5px rgb(240, 185, 5) solid'} : {}
+
       return(
-          <ListItem disabled={info.valid ? false : true}>
+          <ListItem style={liStyle} disabled={info.valid ? false : true}>
               <TextField onChange={this.validateDistricts} minimal id={`district_${info.uid}`} placeholder="Community Name . . ." data-valid={info.valid}/>
               <ListItem leftNode={<UsersIcon />}>
                 <ListItemTitle>Total Population: {info.m_TOTPOP_FY}</ListItemTitle>

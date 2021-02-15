@@ -206,6 +206,22 @@ export default class Widget extends BaseWidget {
 
   }
 
+  checkActiveGraphic = () => {
+
+    console.log('Yo')
+
+    if (this.sketch.updateGraphics.length > 0) {
+      this.props.dispatch(
+        appActions.widgetStatePropChange('pftp', 'activeUID', this.sketch.updateGraphics.items[0].uid)
+      )
+    } else {
+      this.props.dispatch(
+        appActions.widgetStatePropChange('pftp', 'activeUID', -1)
+      )
+    }
+
+  }
+
   onCreate = async (event) => {
 
     if (event.state === "complete") {
@@ -231,6 +247,7 @@ export default class Widget extends BaseWidget {
         appActions.widgetStatePropChange('pftp', 'districts', this.districts)
       )
 
+      this.checkActiveGraphic()
     }
 
   }
@@ -260,7 +277,11 @@ export default class Widget extends BaseWidget {
         appActions.widgetStatePropChange('pftp', 'districts', this.districts)
       )
 
+      this.checkActiveGraphic()
+
     }
+
+    this.checkActiveGraphic()
 
   }
 
@@ -337,7 +358,10 @@ export default class Widget extends BaseWidget {
       if (names.length > 0 && !names.includes('District Submissions')) {
         this.sketch.complete()
       }
+
     })
+
+    // this.checkActiveGraphic()
 
   }
 
@@ -371,6 +395,8 @@ export default class Widget extends BaseWidget {
     this.sketch.on('create', this.onCreate)
     this.sketch.on('update', this.onUpdate)
     this.sketch.on('delete', this.onDelete)
+
+    this.districtGL.on('click', this.checkActiveGraphic)
 
     const layerList = new LayerList({
       view: this.view

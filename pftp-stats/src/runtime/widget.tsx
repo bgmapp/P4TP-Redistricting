@@ -160,7 +160,7 @@ export default class Widget extends BaseWidget {
             <Tooltip title="Overview" enterDelay={1000}>
               <Information id="navBtn" style={this.state.activeStep == 1 ? navSelected : navBaseline} onClick={() => {this.updateActive(1)}}/>
             </Tooltip>
-            <Tooltip title="Editor Tab" enterDelay={1000}>
+            <Tooltip title="Create" enterDelay={1000}>
               <AddInEdit id="navBtn" style={this.state.activeStep == 2 ? navSelected : navBaseline} onClick={() => {this.updateActive(2)}}/>
             </Tooltip>
             <Tooltip title="Explore" enterDelay={500}>
@@ -192,7 +192,8 @@ Widget.mapExtraStateProps = (state) => {
       submission: state.widgetsState.pftp.submission,
       submissionName: state.widgetsState.pftp.submissionName,
       mapView: state.widgetsState.pftp.mapView,
-      pushedOIDs: state.widgetsState.pftp.pushedOIDs
+      pushedOIDs: state.widgetsState.pftp.pushedOIDs,
+      activeUID: state.widgetsState.pftp.activeUID
     }
 
   }

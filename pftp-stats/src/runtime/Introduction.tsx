@@ -17,8 +17,8 @@ export default class Introduction extends React.Component {
         return(
           <div>
             <CalciteP>
-              Get started on your own community boundaries by drawing on map to your right. After you have submitted your own
-              community outline, there will be a chance to explore what other people have submitted for their communities.
+              Get started on your own community boundaries by drawing on map to your right. After you have submitted your
+              community outline, there will be a chance to explore what others have submitted for their own communities.
             </CalciteP>
 
             <hr style={{margin: 0}}/>
