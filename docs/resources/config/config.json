@@ -19,12 +19,12 @@
         "0": {
           "type": "WIDGET",
           "bbox": {
-            "left": "35.5469%",
+            "left": "35.5481%",
             "top": 0,
-            "width": "64.4531%",
+            "width": "64.4519%",
             "height": "100.0000%",
             "right": 0,
-            "bottom": 0
+            "bottom": "0px"
           },
           "widgetId": "widget_1",
           "setting": {
