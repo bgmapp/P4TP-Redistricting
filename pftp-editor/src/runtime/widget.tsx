@@ -208,7 +208,7 @@ export default class Widget extends BaseWidget {
 
   checkActiveGraphic = () => {
 
-    console.log('Yo')
+    // Used to Highlight List Item in pftp-stats Widget
 
     if (this.sketch.updateGraphics.length > 0) {
       this.props.dispatch(
@@ -348,6 +348,25 @@ export default class Widget extends BaseWidget {
 
   }
 
+  validateDistrictGeometries = () => {
+
+    // Ensure Any Potentially Valid Districts Are Updated
+
+    this.sketch.layer.graphics.forEach((g) => {
+
+      this.districts.forEach((dg) => {
+        if (dg.uid == g.uid) {
+          dg.valid = this.checkIntersection(g);
+        }
+      })
+    })
+
+    this.props.dispatch(
+      appActions.widgetStatePropChange('pftp', 'districts', this.districts)
+    )
+
+  }
+
   mapClick = (evt) => {
 
     this.view.hitTest(evt.screenPoint)
@@ -359,9 +378,10 @@ export default class Widget extends BaseWidget {
         this.sketch.complete()
       }
 
-    })
+      
+      this.validateDistrictGeometries()
 
-    // this.checkActiveGraphic()
+    })
 
   }
 
