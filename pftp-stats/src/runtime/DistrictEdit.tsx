@@ -235,7 +235,7 @@ export default class DistrictEdit extends React.Component {
 
       return(
           <ListItem style={liStyle} disabled={info.valid ? false : true}>
-              <TextField onChange={this.validateDistricts} minimal id={`district_${info.uid}`} placeholder="Community Name . . ." data-valid={info.valid}/>
+              <TextField className='communityPlaceholder' onChange={this.validateDistricts} minimal id={`district_${info.uid}`} placeholder="Community Name (Required)" data-valid={info.valid}/>
               <ListItem leftNode={<UsersIcon />}>
                 <ListItemTitle>Total Population: {info.m_TOTPOP_FY}</ListItemTitle>
               </ListItem>
@@ -246,7 +246,7 @@ export default class DistrictEdit extends React.Component {
                 <ListItemTitle>Compaction Index: {info.compaction}</ListItemTitle>
               </ListItem>
               <ListItem>
-                <TextField id={`comment_${info.uid}`} minimal placeholder="Community comments . . ."/>
+                <TextField id={`comment_${info.uid}`} minimal placeholder="Comments . . ."/>
               </ListItem>
           </ListItem>
       )
@@ -306,7 +306,7 @@ export default class DistrictEdit extends React.Component {
           <CalciteP>
             Use the sketch tool in the map to get started. You can enforce straight lines while drawing by holding down the control (Ctrl) key. 
             Any boundaries that overlap will be flagged as "invalid" geometries and shown in gray. You will not be able to submit your 
-            response until all of your boundaries have a name an do not overlap. We encourage you to spend time exploring how various community 
+            response until all of your boundaries have a name and do not overlap. We encourage you to spend time exploring how various community 
             shapes impact diversity and compaction.
             <span style={{fontStyle: 'italic', color: '#003eff'}} onClick={this.props.openModal}> More Details</span>
           </CalciteP>

@@ -9,3 +9,8 @@
 #navBtn {
     margin: 0px 10px 0px 10px;
 }
+
+.communityPlaceholder::placeholder {
+    font-weight: bold;
+    // font-style: italic;
+}
