@@ -4,7 +4,7 @@ import FeatureLayer = require('esri/layers/FeatureLayer')
 import Extent = require('esri/geometry/Extent')
 
 import Table, { TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from 'calcite-react/Table'
-import { CalciteP } from 'calcite-react/Elements'
+import { CalciteP, CalciteH6 } from 'calcite-react/Elements'
 import { MenuItem } from 'calcite-react/Menu'
 import Button, { ButtonGroup } from 'calcite-react/Button'
 import MultiSelect from 'calcite-react/MultiSelect'
@@ -272,9 +272,15 @@ export default class DistrictView extends BaseWidget {
 
                 <ViewChart dataKey='cmp' data={this.state} />
 
+                <CalciteP style={{marginTop: '30px'}}>
+                    Your submission had a compaction of {Math.round(this.state.userCompaction)} and a diversity of {Math.round(this.state.userDiversity)}.
+                    In the chart above you should be able to see how your input compares against others who have used this tool. From here you can either 
+                    select "Map Another Community" to submit another response, or choose "Explore on P4TP" to work with the data in ArcGIS Online.            
+                </CalciteP>
+
                 <div style={{textAlign: 'center', marginTop: 80}}>
                     <ButtonGroup>
-                        <Button style={{margin: 1}} clear disabled={this.props.data.submission == false ? true : false} onClick={this.props.viewSubmit} icon={<Chevron size={16}/>} iconPosition="before" clear>Submit Again</Button>
+                        <Button style={{margin: 1}} clear disabled={this.props.data.submission == false ? true : false} onClick={this.props.viewSubmit} icon={<Chevron size={16}/>} iconPosition="before" clear>Map Another Community</Button>
                         <Button style={{margin: 1}} clear onClick={this.buildLink} clear>Explore on PFTP</Button>
                     </ButtonGroup>
                 </div>
