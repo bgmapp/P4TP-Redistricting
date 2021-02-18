@@ -19,9 +19,9 @@
         "0": {
           "type": "WIDGET",
           "bbox": {
-            "left": "35.0073%",
+            "left": "33.9136%",
             "top": 0,
-            "width": "64.9927%",
+            "width": "66.0864%",
             "height": "100.0000%",
             "right": 0,
             "bottom": 0
@@ -48,9 +48,9 @@
           "bbox": {
             "left": 0,
             "top": 0,
-            "width": "34.9219%",
+            "width": "33.9063%",
             "height": "100.0000%",
-            "right": "65.0781%",
+            "right": "66.0938%",
             "bottom": 0
           },
           "widgetId": "widget_2",
