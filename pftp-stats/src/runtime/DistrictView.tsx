@@ -139,8 +139,6 @@ export default class DistrictView extends BaseWidget {
 
     componentDidMount = async () => {
 
-        if (!this.props.data.submission) return
-
         let stats = await this.collectStatistics('1=1')
 
         let pushedWhere = `objectId in (${this.props.data.pushedOIDs.map(x => `${x}`).join(",")})`
