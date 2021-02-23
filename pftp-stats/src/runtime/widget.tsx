@@ -1,12 +1,13 @@
 import { React, BaseWidget, appActions } from 'jimu-core'
 
 import CalciteThemeProvider from 'calcite-react/CalciteThemeProvider'
-import { CalciteH3, CalciteP } from 'calcite-react/Elements'
+import { CalciteH3, CalciteP, CalciteH6, CalciteH5 } from 'calcite-react/Elements'
 
 import Information from 'calcite-ui-icons-react/InformationIcon'
 import AddInEdit from 'calcite-ui-icons-react/AddInEditIcon'
 import Users from 'calcite-ui-icons-react/UsersIcon'
 import Tooltip from 'calcite-react/Tooltip'
+import Stepper, { Step,StepTitle,StepDescription } from 'calcite-react/Stepper'
 
 import Introduction from './Introduction'
 import DistrictEdit from './DistrictEdit'
@@ -147,28 +148,23 @@ export default class Widget extends BaseWidget {
 
   render() {
 
-    let mainContent = this.getMainContent()
-
     let navBaseline = {opacity: '0.5'}
-    let navSelected = {color: 'black'}
+    let navSelected = {color: '#535353', fontWeight: 'bold'}
+
+    // var create = !this.props.districts || this.props.districts.length < 1 ? 'Create' : `Create (${this.props.districts.length})`;
 
     return (
+
       <CalciteThemeProvider>
         <Container>
           <Header>
             <CalciteH3>Mapping Community</CalciteH3>
-            <Tooltip title="Overview" enterDelay={1000}>
-              <Information id="navBtn" style={this.state.activeStep == 1 ? navSelected : navBaseline} onClick={() => {this.updateActive(1)}}/>
-            </Tooltip>
-            <Tooltip title="Create" enterDelay={1000}>
-              <AddInEdit id="navBtn" style={this.state.activeStep == 2 ? navSelected : navBaseline} onClick={() => {this.updateActive(2)}}/>
-            </Tooltip>
-            <Tooltip title="Explore" enterDelay={500}>
-              <Users id="navBtn" style={this.state.activeStep == 3 ? navSelected : navBaseline} onClick={() => {this.updateActive(3)}}/>
-            </Tooltip>
+            <CalciteH6 id="navTerm" style={this.state.activeStep == 1 ? navSelected : navBaseline} onClick={() => {this.updateActive(1)}}>Learn</CalciteH6>
+            <CalciteH6 id="navTerm" style={this.state.activeStep == 2 ? navSelected : navBaseline} onClick={() => {this.updateActive(2)}}>Create</CalciteH6>
+            <CalciteH6 id="navTerm" style={this.state.activeStep == 3 ? navSelected : navBaseline} onClick={() => {this.updateActive(3)}}>Export</CalciteH6>
           </Header>
           <Overflow>
-            {mainContent}
+            {this.getMainContent()}
           </Overflow>
           <Footer>
             <CalciteP style={{margin: 'auto', padding: '15px 5px 5px 5px', color: '#4242426b'}}>
@@ -188,7 +184,9 @@ Widget.mapExtraStateProps = (state) => {
   if (state.widgetsState.pftp) {
 
     return {
+      uniqueNames: state.widgetsState.pftp.uniqueNames,
       districts: state.widgetsState.pftp.districts,
+      outDistricts: state.widgetsState.pftp.outDistricts,
       submission: state.widgetsState.pftp.submission,
       submissionName: state.widgetsState.pftp.submissionName,
       mapView: state.widgetsState.pftp.mapView,

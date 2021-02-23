@@ -1,18 +1,19 @@
-import { React, BaseWidget, appActions } from 'jimu-core'
+import { React, BaseWidget, appActions } from 'jimu-core';
 
-import FeatureLayer = require('esri/layers/FeatureLayer')
-import Extent = require('esri/geometry/Extent')
+import FeatureLayer = require('esri/layers/FeatureLayer');
+import projection = require("esri/geometry/projection");
+import SpatialReference = require("esri/geometry/SpatialReference");
+import Polygon = require("esri/geometry/Polygon");
 
-import Table, { TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from 'calcite-react/Table'
-import { CalciteP, CalciteH6 } from 'calcite-react/Elements'
-import { MenuItem } from 'calcite-react/Menu'
-import Button, { ButtonGroup } from 'calcite-react/Button'
-import MultiSelect from 'calcite-react/MultiSelect'
+import Table, { TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from 'calcite-react/Table';
+import { CalciteP } from 'calcite-react/Elements';
+import Button, { ButtonGroup } from 'calcite-react/Button';
 
-import Chevron from 'calcite-ui-icons-react/ChevronLeftIcon'
+import Chevron from 'calcite-ui-icons-react/ChevronLeftIcon';
+import Download from 'calcite-ui-icons-react/DownloadToIcon';
+
+import ContactTable from './ContactTable';
   
-import ViewChart from './ViewChart'
-
 
 export default class DistrictView extends BaseWidget {
 
@@ -24,232 +25,136 @@ export default class DistrictView extends BaseWidget {
         })
 
         this.state = {
-            selectedValues: ['ALL'],
-            uniqueSelected: undefined,
-            uniqueNames: [],
-            averageCompaction: 0,
-            averageDiversity: 0,
-            userCompaction: 0,
-            userDiversity: 0,
-            chartData: [],
-            cmpRecords: [],
-            divRecords: []
         }
-
-    }
-
-    fetchChartRecords = async(where) => {
-
-        let query = this.districtsFL.createQuery()
-        query.outFields = ['cmp_index', 'div_index', 'dist_id']
-        query.geometry = new Extent(this.props.data.mapView.extent)
-        query.where = where
-
-        let results = await this.districtsFL.queryFeatures(query)
-        .then((r) => {
-            return r.features.map(function(f) {
-                 return {
-                    'id':  f.attributes.dist_id, 
-                    'cmp': f.attributes.cmp_index,
-                    'div': f.attributes.div_index
-                }
-            })
-        })
-
-        return results
-
-    }
-
-    async collectStatistics(where) {
-
-        let cmp = {
-            onStatisticField: "cmp_index",
-            outStatisticFieldName: "Compaction",
-            statisticType: "avg"
-        }
-
-        let div = {
-            onStatisticField: "div_index",
-            outStatisticFieldName: "Diversity",
-            statisticType: "avg"
-        }
-
-        let query = this.districtsFL.createQuery()
-        query.where = where
-        query.outStatistics = [ cmp, div ]
-
-        let stats = await this.districtsFL.queryFeatures(query)
-        .then((r) => {
-            return {
-                compaction: r.features[0].attributes['Compaction'].toFixed(2),
-                diversity: r.features[0].attributes['Diversity'].toFixed(2)
-            }
-        })
-        .catch((e) => {
-            console.log(`Error Fetching Statistics: ${e}`)
-            return {
-                compaction: 0,
-                diversity: 0
-            }
-        })
-
-        return stats
-
-    }
-
-    handleMultiSelectChange = async (values) => {
-
-        if (values.length == 0 || values.includes('ALL')) {
-            var where = '1=1'
-        } else {
-            var where =  `dist_name in (${values.map(x => `'${x}'`).join(",")})`
-        }
-
-        let stats = await this.collectStatistics(where)
-
-        let chartData = await this.fetchChartRecords(where)
-
-        this.setState({
-          averageCompaction: stats.compaction,
-          averageDiversity: stats.diversity,
-          selectedValues: values,
-          chartData: chartData
-        })
-
-        this.props.data.dispatch(
-            appActions.widgetStatePropChange('pftp', 'districtWhere', where)
-        )
-    }
-
-    async getUniqueNames(featureLayer) {
-
-        let query = featureLayer.createQuery()
-        query.returnDistinctValues = true
-        query.returnGeometry = false
-        query.geometry = new Extent(this.props.data.mapView.extent)
-        query.outFields = ['dist_name']
-
-        let uniqueNames = await featureLayer.queryFeatures(query).then((resp) => {
-            return resp.features.map(f => f.attributes.dist_name)
-        })
-
-        return uniqueNames
 
     }
 
     componentDidMount = async () => {
 
-        let stats = await this.collectStatistics('1=1')
-
-        let pushedWhere = `objectId in (${this.props.data.pushedOIDs.map(x => `${x}`).join(",")})`
-        let pushedStats = await this.collectStatistics(pushedWhere)
-
-        let chartData = await this.fetchChartRecords('1=1')
-
-        this.setState({
-            averageCompaction: stats.compaction,
-            averageDiversity: stats.diversity,
-            userCompaction: pushedStats.compaction,
-            userDiversity: pushedStats.diversity,
-            uniqueNames: await this.getUniqueNames(this.districtsFL),
-            chartData: chartData
-        })
+        // this.setState({
+        //     averageCompaction: stats.compaction,
+        //     averageDiversity: stats.diversity,
+        //     userCompaction: pushedStats.compaction,
+        //     userDiversity: pushedStats.diversity,
+        // })
 
     }
 
     async componentDidUpdate(prevProps) {
 
-        if (this.props.data.mapView != prevProps.data.mapView) {
+        // if (this.props.data.mapView != prevProps.data.mapView) {
 
-            let uniqueNames = await this.getUniqueNames(this.districtsFL)
+        //     let uniqueNames = await this.getUniqueNames(this.districtsFL)
 
-            if (uniqueNames.length < 1) {
+        //     if (uniqueNames.length < 1) {
 
-                this.setState({
-                    uniqueNames: uniqueNames,
-                    averageCompaction: 0,
-                    averageDiversity: 0,
-                    chartData: []
-                })
+        //         this.setState({
+        //             uniqueNames: uniqueNames,
+        //             averageCompaction: 0,
+        //             averageDiversity: 0,
+        //             chartData: []
+        //         })
 
-            } else {
+        //     } else {
 
-                if (this.state.selectedValues.includes('ALL')) {
-                    var where = `dist_name in (${uniqueNames.map(x => `'${x}'`).join(",")})`
-                } else {
-                    var where = `dist_name in (${this.state.selectedValues.map(x => `'${x}'`).join(",")})`
-                }
+        //         if (this.state.selectedValues.includes('ALL')) {
+        //             var where = `dist_name in (${uniqueNames.map(x => `'${x}'`).join(",")})`
+        //         } else {
+        //             var where = `dist_name in (${this.state.selectedValues.map(x => `'${x}'`).join(",")})`
+        //         }
 
-                let stats = await this.collectStatistics(where)
-                let chartData = await this.fetchChartRecords(where)
+        //         let stats = await this.collectStatistics(where)
+        //         let chartData = await this.fetchChartRecords(where)
 
-                this.setState({
-                    uniqueNames: uniqueNames,
-                    averageCompaction: stats.compaction,
-                    averageDiversity: stats.diversity,
-                    chartData: chartData
-                })
+        //         this.setState({
+        //             uniqueNames: uniqueNames,
+        //             averageCompaction: stats.compaction,
+        //             averageDiversity: stats.diversity,
+        //             chartData: chartData
+        //         })
 
+        //     }
+        // }
+
+    }
+
+    buildGeoJSON = (e) => {
+
+        projection.load()
+        .then(() => {
+
+            var geoJSON = {
+                type: "FeatureCollection",
+                features: []
             }
-        }
 
-    }
+            this.props.data.outDistricts.forEach((d) => {
 
-    buildLink = () => {
+                console.log('Export')
+                console.log(d)
 
-        let baseUrl = `https://ourcommunity.maps.arcgis.com/home/webmap/viewer.html?webmap=${this.props.data.config.exploreMapId}`
-        let center  = `center=${this.props.data.mapView.x},${this.props.data.mapView.y},${this.props.data.mapView.wkid}`
-        let level   = `level=${this.props.data.mapView.zoom - 2}`
-        let target  = `${baseUrl}&${center}&${level}`
+                var p = Polygon({rings: d.geometry.rings, spatialReference: new SpatialReference({wkid: 3857})})
+                var projected  = projection.project(p, new SpatialReference({wkid: 4326}))
 
-        window.open(target)
+                geoJSON.features.push({
+                    type: 'Feature',
+                    properties: {
+                        'id': d.attributes.dist_id,
+                        'name': d.attributes.dist_name,
+                        'comments': d.attributes.comments,
+                        'compaction': d.attributes.cmp_index,
+                        'diversity': d.attributes.div_index,
+                        'population': d.attributes.population
+                    },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: projected.rings
+                    }
+                })
 
-    }
-
-    getMenuItems = () => {
-
-        let menuItems = undefined
-
-        if (this.state.uniqueNames.length < 1) {
-
-            return <div style={{textAlign: 'center'}}><CalciteP value="ALL">No Values Found in Current Extent</CalciteP></div>
-
-        } else {
-
-            menuItems = this.state.uniqueNames.map((u) => {
-                return <MenuItem value={u}>{u}</MenuItem>
             })
-            menuItems.unshift(<MenuItem value="ALL">Show All Entries</MenuItem>)
 
-            return (
-                <MultiSelect closeOnSelect={false} fulldWidth={true} selectedValues={this.state.selectedValues} onChange={this.handleMultiSelectChange} fullWidth>
-                    {menuItems}
-                </MultiSelect>
-            )
-        }
+            const exportBlob = new Blob([JSON.stringify(geoJSON)], {type: 'text/json;charset=utf-8'})
+
+            const blobUrl = URL.createObjectURL(exportBlob);
+
+            const anchor = document.createElement('a');
+            anchor.href = blobUrl;
+            anchor.target = "_blank";
+            anchor.download = "boundaries.json";
+
+            anchor.click();
+
+            URL.revokeObjectURL(blobUrl);
+
+        })
+        .catch((err) => console.log(err))
 
     }
 
     render() {
 
-        if (!this.props.started) {
-            return(
-                <div>
-                    <CalciteP>
-                        Please submit a response to uncover what others have contributed for their communities. Once you have made a submission
-                        on the Editor Tab, you will be brought back here to explore other responses.
-                    </CalciteP>
-                    <div style={{textAlign: 'center'}}>
-                        <Button clear onClick={() => {this.props.updateActive(2)}}>Go to Editor Tab</Button>
-                    </div>
-                </div>
-            )
-        }
+        // if (!this.props.started) {
+        //     return(
+        //         <div>
+        //             <CalciteP>
+        //                 Please submit a response to uncover what others have contributed for their communities. Once you have made a submission
+        //                 on the Editor Tab, you will be brought back here to explore other responses.
+        //             </CalciteP>
+        //             <div style={{textAlign: 'center'}}>
+        //                 <Button clear onClick={() => {this.props.updateActive(2)}}>Start Creating</Button>
+        //             </div>
+        //         </div>
+        //     )
+        // }
+
+        var btnDisable = !this.props.started ? true : false;
 
         return(
             <div>
 
-                <Table noCol noRow>
+                <CalciteP style={{textAlign: 'center', margin: 0}}>Community Response Overview</CalciteP>
+                <Table>
                     <TableHeader>
                         <TableHeaderCell style={{textAlign: 'center'}}>Responses</TableHeaderCell>
                         <TableHeaderCell style={{textAlign: 'center'}}>Compaction</TableHeaderCell>
@@ -257,29 +162,24 @@ export default class DistrictView extends BaseWidget {
                     </TableHeader>
                     <TableBody>
                         <TableRow>
-                            <TableCell style={{textAlign: 'center'}}>{this.state.uniqueNames.length}</TableCell>
-                            <TableCell style={{textAlign: 'center'}}>{this.state.averageCompaction}</TableCell>
-                            <TableCell style={{textAlign: 'center'}}>{this.state.averageDiversity}</TableCell>
+                            <TableCell style={{textAlign: 'center'}}>{20}</TableCell>
+                            <TableCell style={{textAlign: 'center'}}>{74}</TableCell>
+                            <TableCell style={{textAlign: 'center'}}>{65</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
 
-                <div style={{margin: '15px'}}>
-                    {this.getMenuItems()}
-                </div>
+                <CalciteP style={{textAlign: 'center', margin: 0}}>Contacts for Testimony Submission</CalciteP>
+                <ContactTable />
 
-                <ViewChart dataKey='cmp' data={this.state} />
-
-                <CalciteP style={{marginTop: '30px'}}>
-                    Your submission had a compaction of {Math.round(this.state.userCompaction)} and a diversity of {Math.round(this.state.userDiversity)}.
-                    In the chart above you should be able to see how your input compares against others who have used this tool. From here you can either 
-                    select "Map Another Community" to submit another response, or choose "Explore on P4TP" to work with the data in ArcGIS Online.            
+                <CalciteP style={{textAlign: 'center', margin: 0}}>
+                    You can now take the GeoJSON below and then push it out and do some things.
                 </CalciteP>
 
                 <div style={{textAlign: 'center', marginTop: 80}}>
                     <ButtonGroup>
-                        <Button style={{margin: 1}} clear disabled={this.props.data.submission == false ? true : false} onClick={this.props.viewSubmit} icon={<Chevron size={16}/>} iconPosition="before" clear>Map Another Community</Button>
-                        <Button style={{margin: 1}} clear onClick={this.buildLink} clear>Explore on PFTP</Button>
+                        <Button style={{margin: 1}} clear disabled={btnDisable} onClick={this.props.viewSubmit} icon={<Chevron size={16}/>} iconPosition="before" clear>Map Another Community</Button>
+                        <Button id="downloadGeoJSON" style={{margin: 1}} clear  disabled={btnDisable} onClick={this.buildGeoJSON} icon={<Download size={16}/>} clear>GeoJSON</Button>
                     </ButtonGroup>
                 </div>
             </div>
