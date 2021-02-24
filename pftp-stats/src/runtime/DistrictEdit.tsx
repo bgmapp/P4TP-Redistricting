@@ -10,6 +10,7 @@ import CheckCirle from 'calcite-ui-icons-react/CheckCircleFIcon'
 import UsersIcon from 'calcite-ui-icons-react/UsersIcon'
 import XCircle from 'calcite-ui-icons-react/XCircleIcon'
 
+import DistrictFilter from './DistrictFilter'
 import EditModal from './EditModal'
 
 import styled from 'styled-components'
@@ -21,6 +22,14 @@ const CenteredLoader = styled(Loader)`
   transform: translate(-50%, -50%)
 `
 
+const FilterDiv = styled.div`
+  margin-top: 45px;
+  margin-bottom: 45px;
+  margin-right: auto;
+  margin-left: auto;
+  width: 80%;
+`
+
 
 export default class DistrictEdit extends React.Component {
 
@@ -29,7 +38,8 @@ export default class DistrictEdit extends React.Component {
 
     this.state = {
       submissionReady: false,
-      districtsReady:  false,
+      districtsReady: false,
+      editModal: false,
       loading: undefined
     }
 
@@ -44,13 +54,12 @@ export default class DistrictEdit extends React.Component {
     districtArray.forEach((f) => {
       features.push({
         attributes: {
-          div_index: f.m_DIVINDX_CY,
-          population: f.m_TOTPOP_FY,
+          div_index: f.diversity,
+          population: f.population,
           cmp_index: f.compaction,
           dist_name: uniqueName,
           dist_id: districtLookup[f.uid].id,
-          comments: districtLookup[f.uid].comments,
-          revised: this.props.started ? 'Yes' : 'No'
+          comments: districtLookup[f.uid].comments
         },
         geometry: {rings: f.geometry}
       })
@@ -58,6 +67,22 @@ export default class DistrictEdit extends React.Component {
 
     return features
 
+  }
+
+  enrichDistricts = () => {
+
+  }
+
+  openModal = () => {
+    this.setState({
+      editModal: true
+    })
+  }
+
+  closeModal = () => {
+    this.setState({
+      editModal: false
+    })
   }
 
   validateGeometries() {
@@ -131,9 +156,7 @@ export default class DistrictEdit extends React.Component {
       return true
 
     } catch {
-
       return false
-      
     }
 
   }
@@ -180,15 +203,12 @@ export default class DistrictEdit extends React.Component {
 
     this.setState({loading: true})
 
-    console.log(`${this.props.data.config.editDistrictsURL}/applyEdits`)
-
     fetch(`${this.props.data.config.editDistrictsURL}/applyEdits`, requestOptions)
     .then(response => response.json())
     .then(result => {
 
       // TODO - Stay on Edit Component & Send Message If Length of Successes is Zero
       let successes = result.addResults.filter(r => r.success)
-      let pushedOIDs = successes.map(s => s.objectId)
 
       this.setState({loading: false})
 
@@ -197,11 +217,12 @@ export default class DistrictEdit extends React.Component {
       )
 
       this.props.data.dispatch(
-        appActions.widgetStatePropChange('pftp', 'pushedOIDs', pushedOIDs)
+        appActions.widgetStatePropChange('pftp', 'uniqueFilter', 'ALL')
       )
 
+      // Just Call This Something Else - Esri Districts or Something
       this.props.data.dispatch(
-        appActions.widgetStatePropChange('pftp', 'uniqueFilter', 'ALL')
+        appActions.widgetStatePropChange('pftp', 'outDistricts', adds)
       )
 
       // Set DistrictView as the Active Component
@@ -221,13 +242,13 @@ export default class DistrictEdit extends React.Component {
   createDistricts = () => {
 
     if (!this.props.data.districts || this.props.data.districts.length < 1) return [undefined, false]
-
+    
     let invalidGeometries = true
 
     let listItems = this.props.data.districts.map((info, i) => {
 
       let c_icon = info.compaction > 50 ? <CheckCirle /> : <XCircle />
-      let d_icon = info.m_DIVINDX_CY > 75 ? <UsersIcon /> : <XCircle />
+      let d_icon = info.diversity > 75 ? <UsersIcon /> : <XCircle />
 
       if (!info.valid) invalidGeometries = false
 
@@ -237,10 +258,10 @@ export default class DistrictEdit extends React.Component {
           <ListItem style={liStyle} disabled={info.valid ? false : true}>
               <TextField className='communityPlaceholder' onChange={this.validateDistricts} minimal id={`district_${info.uid}`} placeholder="Community Name (Required)" data-valid={info.valid}/>
               <ListItem leftNode={<UsersIcon />}>
-                <ListItemTitle>Total Population: {info.m_TOTPOP_FY}</ListItemTitle>
+                <ListItemTitle>Total Population: {info.population}</ListItemTitle>
               </ListItem>
               <ListItem leftNode={d_icon}>
-                <ListItemTitle>Diversity Index: {info.m_DIVINDX_CY}</ListItemTitle>
+                <ListItemTitle>Diversity Index: {info.diversity}</ListItemTitle>
               </ListItem>
               <ListItem leftNode={c_icon}>
                 <ListItemTitle>Compaction Index: {info.compaction}</ListItemTitle>
@@ -296,11 +317,6 @@ export default class DistrictEdit extends React.Component {
     let disableSubmission = [this.state.districtsReady, geomCheck, extraNameCheck].some((e) => e === false)
     let submit = districts == undefined ? noDistricts : this.createSubmission(disableSubmission)
 
-    // //Show Instructions the First Time DistrictEdit is Selected
-    // if (this.props.sdata.firstEditLoad) {
-    //   this.props.setFirstLoad()
-    // }
-
     return(
         <div>
           <CalciteP>
@@ -308,10 +324,14 @@ export default class DistrictEdit extends React.Component {
             Any boundaries that overlap will be flagged as "invalid" geometries and shown in gray. You will not be able to submit your 
             response until all of your boundaries have a name and do not overlap. We encourage you to spend time exploring how various community 
             shapes impact diversity and compaction.
-            <span style={{fontStyle: 'italic', color: '#003eff'}} onClick={this.props.openModal}> More Details</span>
+            <span style={{fontStyle: 'italic', color: '#003eff'}} onClick={this.openModal}> More Details</span>
           </CalciteP>
 
-          <EditModal modalOpen={this.props.sdata.editModal} closeModal={this.props.closeModal}/>
+          <EditModal modalOpen={this.state.editModal} closeModal={this.closeModal}/>
+
+          <FilterDiv>
+            <DistrictFilter data={this.props.data} />
+          </FilterDiv>
 
           {districts}
           <br/>

@@ -1,6 +1,6 @@
-import { React } from 'jimu-core'
+import { React } from 'jimu-core';
 
-import Modal from 'calcite-react/Modal'
+import Modal from 'calcite-react/Modal';
 
 
 export default class EditModal extends React.Component {
@@ -16,6 +16,6 @@ export default class EditModal extends React.Component {
                 <source src="https://pftp-media.s3.amazonaws.com/guide.mp4" />
             </video>
             </Modal>
-        )
+        );
     }
 }
