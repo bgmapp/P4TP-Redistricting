@@ -1,21 +1,15 @@
-import { React, BaseWidget, appActions } from 'jimu-core'
+import { React, BaseWidget, appActions } from 'jimu-core';
 
-import CalciteThemeProvider from 'calcite-react/CalciteThemeProvider'
-import { CalciteH3, CalciteP, CalciteH6, CalciteH5 } from 'calcite-react/Elements'
+import CalciteThemeProvider from 'calcite-react/CalciteThemeProvider';
+import { CalciteH3, CalciteP, CalciteH6 } from 'calcite-react/Elements';
 
-import Information from 'calcite-ui-icons-react/InformationIcon'
-import AddInEdit from 'calcite-ui-icons-react/AddInEditIcon'
-import Users from 'calcite-ui-icons-react/UsersIcon'
-import Tooltip from 'calcite-react/Tooltip'
-import Stepper, { Step,StepTitle,StepDescription } from 'calcite-react/Stepper'
+import Introduction from './Introduction';
+import DistrictEdit from './DistrictEdit';
+import DistrictView from './DistrictView';
 
-import Introduction from './Introduction'
-import DistrictEdit from './DistrictEdit'
-import DistrictView from './DistrictView'
+import styled from 'styled-components';
 
-import styled from 'styled-components'
-
-require('./stylesheets/style.scss')
+require('./stylesheets/style.scss');
 
 
 const Container = styled.div`
@@ -50,16 +44,12 @@ const Footer = styled.div`
 export default class Widget extends BaseWidget {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      firstEditLoad: true,
-      editModal: false,
-      oneSubmission: false,
-      submitted: false,
-      started: false,
       activeStep: 1,
-      firstInput: false
+      firstInput: false,
+      submitted: false,
     }
 
   }
@@ -67,7 +57,7 @@ export default class Widget extends BaseWidget {
   updateActive = (value) => {
     this.setState({
       activeStep: value
-    })
+    });
   }
 
   viewSubmit = () => {
@@ -80,7 +70,6 @@ export default class Widget extends BaseWidget {
     )
 
     this.setState({
-      oneSubmission: true,
       activeStep: 2
     })
 
@@ -89,7 +78,6 @@ export default class Widget extends BaseWidget {
   editSubmit = () => {
 
     this.setState({
-      oneSubmission: true,
       activeStep: 3
     })
 
@@ -110,40 +98,13 @@ export default class Widget extends BaseWidget {
     } 
 
     if (this.state.activeStep == 2) {
-      return <DistrictEdit 
-              editSubmit={this.editSubmit} 
-              started={this.state.oneSubmission}
-              data={this.props}
-              openModal={this.openModal}
-              closeModal={this.closeModal}
-              setFirstLoad={this.setFirstLoad}
-              sdata={this.state}
-              />
+      return <DistrictEdit editSubmit={this.editSubmit} data={this.props} />
     }
     
     if (this.state.activeStep == 3) {
-      return <DistrictView viewSubmit={this.viewSubmit} updateActive={this.updateActive} data={this.props} started={this.state.oneSubmission}/>
+      return <DistrictView viewSubmit={this.viewSubmit} updateActive={this.updateActive} data={this.props} />
     } 
 
-  }
-
-  openModal = () => {
-    this.setState({
-      editModal: true
-    })
-  }
-
-  closeModal = () => {
-    this.setState({
-      editModal: false
-    })
-  }
-
-  setFirstLoad = () => {
-    this.setState({
-      firstEditLoad: false,
-      editModal: true
-    })
   }
 
   render() {
@@ -190,7 +151,6 @@ Widget.mapExtraStateProps = (state) => {
       submission: state.widgetsState.pftp.submission,
       submissionName: state.widgetsState.pftp.submissionName,
       mapView: state.widgetsState.pftp.mapView,
-      pushedOIDs: state.widgetsState.pftp.pushedOIDs,
       activeUID: state.widgetsState.pftp.activeUID
     }
 

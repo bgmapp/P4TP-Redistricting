@@ -31,50 +31,9 @@ export default class DistrictView extends BaseWidget {
 
     componentDidMount = async () => {
 
-        // this.setState({
-        //     averageCompaction: stats.compaction,
-        //     averageDiversity: stats.diversity,
-        //     userCompaction: pushedStats.compaction,
-        //     userDiversity: pushedStats.diversity,
-        // })
-
     }
 
     async componentDidUpdate(prevProps) {
-
-        // if (this.props.data.mapView != prevProps.data.mapView) {
-
-        //     let uniqueNames = await this.getUniqueNames(this.districtsFL)
-
-        //     if (uniqueNames.length < 1) {
-
-        //         this.setState({
-        //             uniqueNames: uniqueNames,
-        //             averageCompaction: 0,
-        //             averageDiversity: 0,
-        //             chartData: []
-        //         })
-
-        //     } else {
-
-        //         if (this.state.selectedValues.includes('ALL')) {
-        //             var where = `dist_name in (${uniqueNames.map(x => `'${x}'`).join(",")})`
-        //         } else {
-        //             var where = `dist_name in (${this.state.selectedValues.map(x => `'${x}'`).join(",")})`
-        //         }
-
-        //         let stats = await this.collectStatistics(where)
-        //         let chartData = await this.fetchChartRecords(where)
-
-        //         this.setState({
-        //             uniqueNames: uniqueNames,
-        //             averageCompaction: stats.compaction,
-        //             averageDiversity: stats.diversity,
-        //             chartData: chartData
-        //         })
-
-        //     }
-        // }
 
     }
 
@@ -89,9 +48,6 @@ export default class DistrictView extends BaseWidget {
             }
 
             this.props.data.outDistricts.forEach((d) => {
-
-                console.log('Export')
-                console.log(d)
 
                 var p = Polygon({rings: d.geometry.rings, spatialReference: new SpatialReference({wkid: 3857})})
                 var projected  = projection.project(p, new SpatialReference({wkid: 4326}))
@@ -115,7 +71,6 @@ export default class DistrictView extends BaseWidget {
             })
 
             const exportBlob = new Blob([JSON.stringify(geoJSON)], {type: 'text/json;charset=utf-8'})
-
             const blobUrl = URL.createObjectURL(exportBlob);
 
             const anchor = document.createElement('a');
@@ -124,31 +79,16 @@ export default class DistrictView extends BaseWidget {
             anchor.download = "boundaries.json";
 
             anchor.click();
-
             URL.revokeObjectURL(blobUrl);
 
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(`Error Building GeoJSON: ${err}`))
 
     }
 
     render() {
 
-        // if (!this.props.started) {
-        //     return(
-        //         <div>
-        //             <CalciteP>
-        //                 Please submit a response to uncover what others have contributed for their communities. Once you have made a submission
-        //                 on the Editor Tab, you will be brought back here to explore other responses.
-        //             </CalciteP>
-        //             <div style={{textAlign: 'center'}}>
-        //                 <Button clear onClick={() => {this.props.updateActive(2)}}>Start Creating</Button>
-        //             </div>
-        //         </div>
-        //     )
-        // }
-
-        var btnDisable = !this.props.started ? true : false;
+        var btnDisable = this.props.data.submission ? false : true;
 
         return(
             <div>

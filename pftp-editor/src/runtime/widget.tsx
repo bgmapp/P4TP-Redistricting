@@ -1,29 +1,29 @@
 /** @jsx jsx */
-import { BaseWidget, jsx, appActions } from 'jimu-core'
+import { BaseWidget, jsx, appActions } from 'jimu-core';
 
-import Map            = require('esri/Map')
-import MapView        = require('esri/views/MapView')
-import FeatureLayer   = require('esri/layers/FeatureLayer')
-import GraphicsLayer  = require('esri/layers/GraphicsLayer')
+import Map            = require('esri/Map');
+import MapView        = require('esri/views/MapView');
+import FeatureLayer   = require('esri/layers/FeatureLayer');
+import GraphicsLayer  = require('esri/layers/GraphicsLayer');
 import Extent         = require('esri/geometry/Extent');
-import GeometryEngine = require('esri/geometry/geometryEngine')
-import watchUtils     = require("esri/core/watchUtils")
-import LayerList      = require("esri/widgets/LayerList")
-import Sketch         = require('esri/widgets/Sketch')
-import Locate         = require("esri/widgets/Locate")
-import Home           = require("esri/widgets/Home")
-import Legend         = require("esri/widgets/Legend")
+import GeometryEngine = require('esri/geometry/geometryEngine');
+import watchUtils     = require("esri/core/watchUtils");
+import LayerList      = require("esri/widgets/LayerList");
+import Sketch         = require('esri/widgets/Sketch');
+import Locate         = require("esri/widgets/Locate");
+import Home           = require("esri/widgets/Home");
+import Legend         = require("esri/widgets/Legend");
 
 
 export default class Widget extends BaseWidget {
   
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.districts = []
-    this.extent    = undefined
-    this.sketch    = undefined
-    this.view      = undefined
+    this.districts = [];
+    this.extent    = undefined;
+    this.sketch    = undefined;
+    this.view      = undefined;
 
     this.demographicsFL = new FeatureLayer({
       title: 'Tracts 2018',
@@ -39,7 +39,7 @@ export default class Widget extends BaseWidget {
           }
         }
       }
-    })
+    });
 
     this.districtsFL = new FeatureLayer({
       title: 'Previous Submissions',
@@ -109,11 +109,11 @@ export default class Widget extends BaseWidget {
           }
         ]
       }
-    })
+    });
 
     this.districtGL = new GraphicsLayer({
       title: 'Your Response',
-    })
+    });
 
     this.districtFL = new FeatureLayer({
       title: 'Proposed Boundaries',
@@ -128,12 +128,12 @@ export default class Widget extends BaseWidget {
           }
         }
       }
-    })
+    });
 
     this.map = new Map({
       basemap: "dark-gray",
       layers: [this.demographicsFL, this.districtsFL, this.districtGL]
-    })
+    });
 
     this.valid = {
       type: "simple-fill",
@@ -176,7 +176,7 @@ export default class Widget extends BaseWidget {
     
     let query = this.demographicsFL.createQuery()
     query.geometry = geometry
-    query.outFields = ['DIVINDX_CY', 'TOTPOP_FY']
+    query.outFields = ['DIVINDX_CY', 'TOTPOP_CY']
     query.returnGeometry = false
     query.returnQueryGeometry = false
 
@@ -187,7 +187,7 @@ export default class Widget extends BaseWidget {
       }, 0)
 
       let population = resp.features.reduce(function(prev, curr) {
-        return prev + curr.attributes.TOTPOP_FY
+        return prev + curr.attributes.TOTPOP_CY
       }, 0)
 
       return {
@@ -485,9 +485,7 @@ export default class Widget extends BaseWidget {
   }
   
   render() {
-    return (
-      <div id="edit-map" style={{height: '100%'}}></div>
-    )
+    return <div id="edit-map" style={{height: '100%'}}></div>
   }
 
 }

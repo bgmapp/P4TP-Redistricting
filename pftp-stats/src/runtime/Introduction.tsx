@@ -1,8 +1,8 @@
-import { React } from 'jimu-core'
+import { React } from 'jimu-core';
 
-import { CalciteP, CalciteH5 } from 'calcite-react/Elements'
+import { CalciteP, CalciteH5 } from 'calcite-react/Elements';
 
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 
 const Section = styled.div`

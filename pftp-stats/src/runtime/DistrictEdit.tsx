@@ -30,6 +30,7 @@ const FilterDiv = styled.div`
   width: 80%;
 `
 
+
 export default class DistrictEdit extends React.Component {
 
   constructor(props) {
@@ -38,6 +39,7 @@ export default class DistrictEdit extends React.Component {
     this.state = {
       submissionReady: false,
       districtsReady: false,
+      editModal: false,
       loading: undefined
     }
 
@@ -69,6 +71,18 @@ export default class DistrictEdit extends React.Component {
 
   enrichDistricts = () => {
 
+  }
+
+  openModal = () => {
+    this.setState({
+      editModal: true
+    })
+  }
+
+  closeModal = () => {
+    this.setState({
+      editModal: false
+    })
   }
 
   validateGeometries() {
@@ -195,16 +209,11 @@ export default class DistrictEdit extends React.Component {
 
       // TODO - Stay on Edit Component & Send Message If Length of Successes is Zero
       let successes = result.addResults.filter(r => r.success)
-      let pushedOIDs = successes.map(s => s.objectId)
 
       this.setState({loading: false})
 
       this.props.data.dispatch(
         appActions.widgetStatePropChange('pftp', 'submission', true)
-      )
-
-      this.props.data.dispatch(
-        appActions.widgetStatePropChange('pftp', 'pushedOIDs', pushedOIDs)
       )
 
       this.props.data.dispatch(
@@ -308,11 +317,6 @@ export default class DistrictEdit extends React.Component {
     let disableSubmission = [this.state.districtsReady, geomCheck, extraNameCheck].some((e) => e === false)
     let submit = districts == undefined ? noDistricts : this.createSubmission(disableSubmission)
 
-    // //Show Instructions the First Time DistrictEdit is Selected
-    // if (this.props.sdata.firstEditLoad) {
-    //   this.props.setFirstLoad()
-    // }
-
     return(
         <div>
           <CalciteP>
@@ -320,10 +324,10 @@ export default class DistrictEdit extends React.Component {
             Any boundaries that overlap will be flagged as "invalid" geometries and shown in gray. You will not be able to submit your 
             response until all of your boundaries have a name and do not overlap. We encourage you to spend time exploring how various community 
             shapes impact diversity and compaction.
-            <span style={{fontStyle: 'italic', color: '#003eff'}} onClick={this.props.openModal}> More Details</span>
+            <span style={{fontStyle: 'italic', color: '#003eff'}} onClick={this.openModal}> More Details</span>
           </CalciteP>
 
-          <EditModal modalOpen={this.props.sdata.editModal} closeModal={this.props.closeModal}/>
+          <EditModal modalOpen={this.state.editModal} closeModal={this.closeModal}/>
 
           <FilterDiv>
             <DistrictFilter data={this.props.data} />

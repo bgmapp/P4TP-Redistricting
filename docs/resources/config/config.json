@@ -16,21 +16,21 @@
     "layout_0": {
       "type": "FIXED",
       "content": {
-        "0": {
+        "3": {
           "type": "WIDGET",
           "bbox": {
-            "left": "33.9136%",
+            "left": 0,
             "top": 0,
-            "width": "66.0864%",
+            "width": "34.5226%",
             "height": "100.0000%",
-            "right": 0,
+            "right": "65.4774%",
             "bottom": 0
           },
-          "widgetId": "widget_1",
+          "widgetId": "widget_4",
           "setting": {
             "autoProps": {
-              "left": true,
-              "right": false,
+              "left": false,
+              "right": true,
               "top": false,
               "bottom": false,
               "height": true
@@ -43,23 +43,23 @@
           },
           "isPending": false
         },
-        "1": {
+        "4": {
           "type": "WIDGET",
           "bbox": {
-            "left": 0,
+            "left": "441px",
             "top": 0,
-            "width": "33.9063%",
+            "width": "65.5352%",
             "height": "100.0000%",
-            "right": "66.0938%",
+            "right": 0,
             "bottom": 0
           },
-          "widgetId": "widget_2",
+          "widgetId": "widget_5",
           "setting": {
             "autoProps": {
-              "left": false,
-              "right": true,
-              "bottom": false,
+              "right": false,
+              "left": true,
               "top": false,
+              "bottom": false,
               "height": true
             },
             "vCenter": false,
@@ -72,8 +72,8 @@
         }
       },
       "order": [
-        "0",
-        "1"
+        "3",
+        "4"
       ]
     }
   },
@@ -194,25 +194,25 @@
     }
   },
   "widgets": {
-    "widget_1": {
-      "uri": "widgets/pftp-editor/",
-      "version": "1.0.0",
-      "label": "pftp-editor 1",
-      "config": {
-        "demographicsURL": "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/AGOL_Base_2018_Final/FeatureServer/4",
-        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0"
-      },
-      "id": "widget_1"
-    },
-    "widget_2": {
+    "widget_4": {
       "uri": "widgets/pftp-stats/",
       "version": "1.0.0",
       "label": "pftp-stats 1",
       "config": {
         "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
-        "exploreMapId": "612b9f72d6264e5c9baa1148509e0b40"
+        "exploreMapId": "77c3b230c2ab4bc5976699947976ef02"
       },
-      "id": "widget_2"
+      "id": "widget_4"
+    },
+    "widget_5": {
+      "uri": "widgets/pftp-editor/",
+      "version": "1.0.0",
+      "label": "pftp-editor 1",
+      "config": {
+        "demographicsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/Demographics_Focused/FeatureServer/0",
+        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0"
+      },
+      "id": "widget_5"
     }
   },
   "widgetsManifest": {},
