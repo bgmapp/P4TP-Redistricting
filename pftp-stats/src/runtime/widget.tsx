@@ -112,8 +112,6 @@ export default class Widget extends BaseWidget {
     let navBaseline = {opacity: '0.5'}
     let navSelected = {color: '#535353', fontWeight: 'bold'}
 
-    // var create = !this.props.districts || this.props.districts.length < 1 ? 'Create' : `Create (${this.props.districts.length})`;
-
     return (
 
       <CalciteThemeProvider>
@@ -151,7 +149,8 @@ Widget.mapExtraStateProps = (state) => {
       submission: state.widgetsState.pftp.submission,
       submissionName: state.widgetsState.pftp.submissionName,
       mapView: state.widgetsState.pftp.mapView,
-      activeUID: state.widgetsState.pftp.activeUID
+      activeUID: state.widgetsState.pftp.activeUID,
+      contacts: state.widgetsState.pftp.contacts
     }
 
   }

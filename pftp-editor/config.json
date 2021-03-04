@@ -1,4 +1,5 @@
 {
   "demographicsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/Demographics_Focused/FeatureServer/0",
-  "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0"
+  "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
+  "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
 }
