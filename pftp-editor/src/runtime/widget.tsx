@@ -115,6 +115,10 @@ export default class Widget extends BaseWidget {
       title: 'Your Response',
     });
 
+    this.stateContacts = new FeatureLayer({
+      url: this.props.config.stateContactsURL
+    });
+
     this.districtFL = new FeatureLayer({
       title: 'Proposed Boundaries',
       source: this.districtGL,
@@ -373,11 +377,44 @@ export default class Widget extends BaseWidget {
      
   }
 
+  getContacts = () => {
+
+    let query = this.stateContacts.createQuery();
+    query.geometry = new Extent(this.view.extent.toJSON());
+    query.returnGeometry = false;
+    query.outFields = ['Contact_Name', 'Contact_Email', 'Contact_Phone'];
+
+    this.stateContacts.queryFeatures(query).then((resp) => {
+
+        let contacts = resp.features.map(f => f.attributes);
+
+        this.props.dispatch(
+          appActions.widgetStatePropChange('pftp', 'contacts', contacts)
+        );
+
+    }).catch((err) => console.log(err));
+
+}
+
   handleViewChange = () => {
 
     if (this.view.center && this.view.extent) {
 
       this.getUniqueNames(this.view.extent);
+
+      this.getContacts();
+
+      // if (this.view.center && this.view.extent) {
+      //   this.props.dispatch(
+      //     appActions.widgetStatePropChange('pftp', 'mapView', {
+      //       x:      this.view.center.x, 
+      //       y:      this.view.center.y,
+      //       wkid:   this.view.center.spatialReference.wkid,
+      //       zoom:   this.view.zoom,
+      //       extent: this.view.extent.toJSON()
+      //     })
+      //   )
+      // }
       
     }
 

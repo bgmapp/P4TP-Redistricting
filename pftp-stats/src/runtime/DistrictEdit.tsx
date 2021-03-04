@@ -267,7 +267,7 @@ export default class DistrictEdit extends React.Component {
                 <ListItemTitle>Compaction Index: {info.compaction}</ListItemTitle>
               </ListItem>
               <ListItem>
-                <TextField id={`comment_${info.uid}`} minimal placeholder="Comments . . ."/>
+                <TextField id={`comment_${info.uid}`} type='textarea' minimal placeholder="Describe Your Community"/>
               </ListItem>
           </ListItem>
       )

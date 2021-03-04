@@ -8,7 +8,7 @@
         "LARGE": "layout_0"
       },
       "isDefault": true,
-      "label": "David",
+      "label": "Page 1",
       "isVisible": true
     }
   },
@@ -16,44 +16,41 @@
     "layout_0": {
       "type": "FIXED",
       "content": {
-        "3": {
+        "1": {
           "type": "WIDGET",
           "bbox": {
             "left": 0,
             "top": 0,
-            "width": "34.5226%",
+            "width": "37.5769%",
             "height": "100.0000%",
-            "right": "65.4774%",
+            "right": "62.4231%",
             "bottom": 0
           },
-          "widgetId": "widget_4",
+          "widgetId": "widget_2",
           "setting": {
             "autoProps": {
               "left": false,
               "right": true,
-              "top": false,
               "bottom": false,
+              "top": false,
               "height": true
             },
-            "vCenter": false,
-            "hCenter": false,
             "order": 0,
             "lockParent": false,
             "lockLayout": false
-          },
-          "isPending": false
+          }
         },
-        "4": {
+        "2": {
           "type": "WIDGET",
           "bbox": {
-            "left": "441px",
+            "left": "484px",
             "top": 0,
-            "width": "65.5352%",
+            "width": "62.1875%",
             "height": "100.0000%",
             "right": 0,
             "bottom": 0
           },
-          "widgetId": "widget_5",
+          "widgetId": "widget_3",
           "setting": {
             "autoProps": {
               "right": false,
@@ -62,18 +59,15 @@
               "bottom": false,
               "height": true
             },
-            "vCenter": false,
-            "hCenter": false,
             "order": 0,
             "lockParent": false,
             "lockLayout": false
-          },
-          "isPending": false
+          }
         }
       },
       "order": [
-        "3",
-        "4"
+        "1",
+        "2"
       ]
     }
   },
@@ -194,25 +188,26 @@
     }
   },
   "widgets": {
-    "widget_4": {
+    "widget_2": {
       "uri": "widgets/pftp-stats/",
       "version": "1.0.0",
       "label": "pftp-stats 1",
       "config": {
         "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
-        "exploreMapId": "77c3b230c2ab4bc5976699947976ef02"
+        "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
       },
-      "id": "widget_4"
+      "id": "widget_2"
     },
-    "widget_5": {
+    "widget_3": {
       "uri": "widgets/pftp-editor/",
       "version": "1.0.0",
       "label": "pftp-editor 1",
       "config": {
         "demographicsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/Demographics_Focused/FeatureServer/0",
-        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0"
+        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
+        "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
       },
-      "id": "widget_5"
+      "id": "widget_3"
     }
   },
   "widgetsManifest": {},

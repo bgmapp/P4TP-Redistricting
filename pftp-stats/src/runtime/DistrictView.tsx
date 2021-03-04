@@ -4,6 +4,7 @@ import FeatureLayer = require('esri/layers/FeatureLayer');
 import projection = require("esri/geometry/projection");
 import SpatialReference = require("esri/geometry/SpatialReference");
 import Polygon = require("esri/geometry/Polygon");
+import Extent         = require('esri/geometry/Extent');
 
 import Table, { TableHeader, TableHeaderCell, TableBody, TableRow, TableCell } from 'calcite-react/Table';
 import { CalciteP } from 'calcite-react/Elements';
@@ -22,18 +23,7 @@ export default class DistrictView extends BaseWidget {
 
         this.districtsFL = new FeatureLayer({
             url: this.props.data.config.editDistrictsURL
-        })
-
-        this.state = {
-        }
-
-    }
-
-    componentDidMount = async () => {
-
-    }
-
-    async componentDidUpdate(prevProps) {
+        });
 
     }
 
@@ -90,31 +80,21 @@ export default class DistrictView extends BaseWidget {
 
         var btnDisable = this.props.data.submission ? false : true;
 
+        var text =  <CalciteP style={{textAlign: 'center', margin: 0}}>
+                        Now that you have made a submission, you can do 2 things: submit another response or download your community as a GeoJSON. Any feedback or issues can be 
+                        sent to pftp@email.com
+                    </CalciteP>
+
+        var message = this.props.data.submission ? text : undefined;
+
         return(
             <div>
 
-                <CalciteP style={{textAlign: 'center', margin: 0}}>Community Response Overview</CalciteP>
-                <Table>
-                    <TableHeader>
-                        <TableHeaderCell style={{textAlign: 'center'}}>Responses</TableHeaderCell>
-                        <TableHeaderCell style={{textAlign: 'center'}}>Compaction</TableHeaderCell>
-                        <TableHeaderCell style={{textAlign: 'center'}}>Diversity</TableHeaderCell>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell style={{textAlign: 'center'}}>{20}</TableCell>
-                            <TableCell style={{textAlign: 'center'}}>{74}</TableCell>
-                            <TableCell style={{textAlign: 'center'}}>{65</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <div style={{marginBottom: '50px'}}>
+                    <ContactTable contacts={this.props.data.contacts} />
+                </div>
 
-                <CalciteP style={{textAlign: 'center', margin: 0}}>Contacts for Testimony Submission</CalciteP>
-                <ContactTable />
-
-                <CalciteP style={{textAlign: 'center', margin: 0}}>
-                    You can now take the GeoJSON below and then push it out and do some things.
-                </CalciteP>
+                {message}
 
                 <div style={{textAlign: 'center', marginTop: 80}}>
                     <ButtonGroup>
