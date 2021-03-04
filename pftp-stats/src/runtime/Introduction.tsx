@@ -1,8 +1,8 @@
-import { React } from 'jimu-core'
+import { React } from 'jimu-core';
 
-import { CalciteP, CalciteH5 } from 'calcite-react/Elements'
+import { CalciteP, CalciteH5 } from 'calcite-react/Elements';
 
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 
 const Section = styled.div`
@@ -17,8 +17,8 @@ export default class Introduction extends React.Component {
         return(
           <div>
             <CalciteP>
-              Get started on your own community boundaries by drawing on map to your right. After you have submitted your own
-              community outline, there will be a chance to explore what other people have submitted for their communities.
+              Get started on your own community testimony by drawing on map to your right. After you have submitted your
+              community outline, there will be a chance to explore what others have submitted for their own communities.
             </CalciteP>
 
             <hr style={{margin: 0}}/>
@@ -48,7 +48,7 @@ export default class Introduction extends React.Component {
             </Section>
 
             <Section>
-              <CalciteH5 style={{marginBottom: '5px'}}>Polsby Popper</CalciteH5>
+              <CalciteH5 style={{marginBottom: '5px'}}>Polsby Popper - Compaction</CalciteH5>
               <CalciteP style={{marginBottom: '12px'}}>
                 Compactness measures like the Polsby Popper Ratio have been widely used to assess geographic gerrymandering. You may have seen unusual distrcits before and this 
                 index can be used as a shorthand for gerrmandering in some cases.

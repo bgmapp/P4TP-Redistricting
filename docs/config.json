@@ -8,7 +8,7 @@
         "LARGE": "layout_0"
       },
       "isDefault": true,
-      "label": "David",
+      "label": "Page 1",
       "isVisible": true
     }
   },
@@ -16,41 +16,14 @@
     "layout_0": {
       "type": "FIXED",
       "content": {
-        "0": {
-          "type": "WIDGET",
-          "bbox": {
-            "left": "35.5469%",
-            "top": 0,
-            "width": "64.4531%",
-            "height": "100.0000%",
-            "right": 0,
-            "bottom": 0
-          },
-          "widgetId": "widget_1",
-          "setting": {
-            "autoProps": {
-              "left": true,
-              "right": false,
-              "top": false,
-              "bottom": false,
-              "height": true
-            },
-            "vCenter": false,
-            "hCenter": false,
-            "order": 0,
-            "lockParent": false,
-            "lockLayout": false
-          },
-          "isPending": false
-        },
         "1": {
           "type": "WIDGET",
           "bbox": {
             "left": 0,
             "top": 0,
-            "width": "35.5469%",
+            "width": "37.5769%",
             "height": "100.0000%",
-            "right": "64.4531%",
+            "right": "62.4231%",
             "bottom": 0
           },
           "widgetId": "widget_2",
@@ -62,18 +35,39 @@
               "top": false,
               "height": true
             },
-            "vCenter": false,
-            "hCenter": false,
             "order": 0,
             "lockParent": false,
             "lockLayout": false
+          }
+        },
+        "2": {
+          "type": "WIDGET",
+          "bbox": {
+            "left": "484px",
+            "top": 0,
+            "width": "62.1875%",
+            "height": "100.0000%",
+            "right": 0,
+            "bottom": 0
           },
-          "isPending": false
+          "widgetId": "widget_3",
+          "setting": {
+            "autoProps": {
+              "right": false,
+              "left": true,
+              "top": false,
+              "bottom": false,
+              "height": true
+            },
+            "order": 0,
+            "lockParent": false,
+            "lockLayout": false
+          }
         }
       },
       "order": [
-        "0",
-        "1"
+        "1",
+        "2"
       ]
     }
   },
@@ -194,25 +188,26 @@
     }
   },
   "widgets": {
-    "widget_1": {
-      "uri": "widgets/pftp-editor/",
-      "version": "1.0.0",
-      "label": "pftp-editor 1",
-      "config": {
-        "demographicsURL": "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/AGOL_Base_2018_Final/FeatureServer/4",
-        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0"
-      },
-      "id": "widget_1"
-    },
     "widget_2": {
       "uri": "widgets/pftp-stats/",
       "version": "1.0.0",
       "label": "pftp-stats 1",
       "config": {
         "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
-        "exploreMapId": "612b9f72d6264e5c9baa1148509e0b40"
+        "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
       },
       "id": "widget_2"
+    },
+    "widget_3": {
+      "uri": "widgets/pftp-editor/",
+      "version": "1.0.0",
+      "label": "pftp-editor 1",
+      "config": {
+        "demographicsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/Demographics_Focused/FeatureServer/0",
+        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
+        "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
+      },
+      "id": "widget_3"
     }
   },
   "widgetsManifest": {},

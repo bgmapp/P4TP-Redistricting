@@ -6,6 +6,11 @@
     background: transparent;
 }
 
-#navBtn {
-    margin: 0px 10px 0px 10px;
+#navTerm {
+    margin: 0px 20px 0px 20px;
+    display: inline-block;
+}
+
+.communityPlaceholder::placeholder {
+    font-weight: bold;
 }

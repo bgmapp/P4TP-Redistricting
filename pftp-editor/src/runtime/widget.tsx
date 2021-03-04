@@ -1,23 +1,29 @@
 /** @jsx jsx */
-import { BaseWidget, jsx, appActions } from 'jimu-core'
+import { BaseWidget, jsx, appActions } from 'jimu-core';
 
-import Map            = require('esri/Map')
-import MapView        = require('esri/views/MapView')
-import FeatureLayer   = require('esri/layers/FeatureLayer')
-import GraphicsLayer  = require('esri/layers/GraphicsLayer')
-import GeometryEngine = require('esri/geometry/geometryEngine')
-import watchUtils     = require("esri/core/watchUtils")
-import LayerList      = require("esri/widgets/LayerList")
-import Sketch         = require('esri/widgets/Sketch')
-import Locate         = require("esri/widgets/Locate")
-import Home           = require("esri/widgets/Home")
+import Map            = require('esri/Map');
+import MapView        = require('esri/views/MapView');
+import FeatureLayer   = require('esri/layers/FeatureLayer');
+import GraphicsLayer  = require('esri/layers/GraphicsLayer');
+import Extent         = require('esri/geometry/Extent');
+import GeometryEngine = require('esri/geometry/geometryEngine');
+import watchUtils     = require("esri/core/watchUtils");
+import LayerList      = require("esri/widgets/LayerList");
+import Sketch         = require('esri/widgets/Sketch');
+import Locate         = require("esri/widgets/Locate");
+import Home           = require("esri/widgets/Home");
+import Legend         = require("esri/widgets/Legend");
+
 
 export default class Widget extends BaseWidget {
   
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.districts = []
+    this.districts = [];
+    this.extent    = undefined;
+    this.sketch    = undefined;
+    this.view      = undefined;
 
     this.demographicsFL = new FeatureLayer({
       title: 'Tracts 2018',
@@ -33,10 +39,10 @@ export default class Widget extends BaseWidget {
           }
         }
       }
-    })
+    });
 
     this.districtsFL = new FeatureLayer({
-      title: 'District Submissions',
+      title: 'Previous Submissions',
       url: this.props.config.editDistrictsURL,
       popupTemplate: {
         title: "{dist_name} - District {dist_id}",
@@ -64,7 +70,7 @@ export default class Widget extends BaseWidget {
           }
         ]
       },
-      visible: true,
+      visible: false,
       opacity: .4,
       renderer: {
         type: 'simple',
@@ -81,13 +87,13 @@ export default class Widget extends BaseWidget {
             type: "color",
             field: "cmp_index",
             legendOptions: {
-              title: "Composite Range"
+              title: "Compaction Range"
             },
             stops: [
               {
-                value: 75,
+                value: 25,
                 color: "#FFFCD4",
-                label: "~ 75"
+                label: "~ 25"
               },
               {
                 value: 50,
@@ -95,27 +101,43 @@ export default class Widget extends BaseWidget {
                 label: "~ 50"
               },
               {
-                value: 25,
+                value: 75,
                 color: "#350242",
-                label: "~ 25"
+                label: "~ 75"
               }
             ]
           }
         ]
       }
-    })
+    });
 
     this.districtGL = new GraphicsLayer({
-      title: 'Proposed Boundaries'
-    })
+      title: 'Your Response',
+    });
+
+    this.stateContacts = new FeatureLayer({
+      url: this.props.config.stateContactsURL
+    });
+
+    this.districtFL = new FeatureLayer({
+      title: 'Proposed Boundaries',
+      source: this.districtGL,
+      renderer: {
+        type: 'simple',
+        symbol: {
+          type: 'simple-fill',
+          outline: {
+            color: [240, 185, 5, 1],
+            width: '0.5px'
+          }
+        }
+      }
+    });
 
     this.map = new Map({
       basemap: "dark-gray",
-      layers: [this.demographicsFL, this.districtGL]
-    })
-
-    this.view   = undefined
-    this.sketch = undefined
+      layers: [this.demographicsFL, this.districtsFL, this.districtGL]
+    });
 
     this.valid = {
       type: "simple-fill",
@@ -141,7 +163,7 @@ export default class Widget extends BaseWidget {
 
   getCompaction(geometry) {
 
-    // Return Polsby-Popper Index
+    // Return Polsby-Popper Index for Input Geometry
 
     let a = GeometryEngine.geodesicArea(geometry)
     let l = GeometryEngine.geodesicLength(geometry)
@@ -153,37 +175,57 @@ export default class Widget extends BaseWidget {
 
   getDemographics = async (geometry) => {
 
-    // Return Diversity Index or Other Demographic Details w/in District Boundary
-    // Currently Returning an Object Because We Expec to Return Multiple Attributes
+    // Return Diversity Index & Total Population Within Input Geometry
+    // TODO - Attribute (i.e. Field) Names Should Come from Configuration File
     
     let query = this.demographicsFL.createQuery()
     query.geometry = geometry
-    query.outFields = ['DIVINDX_CY', 'TOTPOP_FY']
+    query.outFields = ['DIVINDX_CY', 'TOTPOP_CY']
     query.returnGeometry = false
     query.returnQueryGeometry = false
 
     return await this.demographicsFL.queryFeatures(query).then((resp) => {
 
-      let DIVINDX_CY = resp.features.reduce(function(prev, curr) {
+      let diversity = resp.features.reduce(function(prev, curr) {
         return prev + curr.attributes.DIVINDX_CY
       }, 0)
 
-      let TOTPOP_FY = resp.features.reduce(function(prev, curr) {
-        return prev + curr.attributes.TOTPOP_FY
+      let population = resp.features.reduce(function(prev, curr) {
+        return prev + curr.attributes.TOTPOP_CY
       }, 0)
 
       return {
-        m_DIVINDX_CY: Math.round(DIVINDX_CY / resp.features.length),
-        m_TOTPOP_FY: Math.round(TOTPOP_FY)
+        diversity: Math.round(diversity / resp.features.length),
+        population: Math.round(population)
       }
 
     })
 
   }
 
-  // TODO - Each Time Update Is Called, Check IF Any Districts Are Now Valid
+  getUniqueNames = (extent) => {
+
+    let query = this.districtsFL.createQuery()
+    query.returnDistinctValues = true
+    query.returnGeometry = false
+    query.geometry = new Extent(extent.toJSON())
+    query.outFields = ['dist_name']
+
+    this.districtsFL.queryFeatures(query).then((resp) => {
+
+        let uniqueNames =  resp.features.map(f => f.attributes.dist_name);
+
+        this.props.dispatch(
+          appActions.widgetStatePropChange('pftp', 'uniqueNames', uniqueNames)
+        );
+
+    }).catch((err) => console.log(err));
+
+  }
   
   checkIntersection = (checkGraphic) => {
+
+    // Return true/false If Graphic Intersects Any Other Boundaries
 
     var valid = true
 
@@ -206,6 +248,22 @@ export default class Widget extends BaseWidget {
 
   }
 
+  checkActiveGraphic = () => {
+
+    // Push the "Active" Boundary to the DistrictEdit Component of the pftp-stats Widget
+
+    if (this.sketch.updateGraphics.length > 0) {
+      this.props.dispatch(
+        appActions.widgetStatePropChange('pftp', 'activeUID', this.sketch.updateGraphics.items[0].uid)
+      )
+    } else {
+      this.props.dispatch(
+        appActions.widgetStatePropChange('pftp', 'activeUID', -1)
+      )
+    }
+
+  }
+
   onCreate = async (event) => {
 
     if (event.state === "complete") {
@@ -218,7 +276,7 @@ export default class Widget extends BaseWidget {
         uid: event.graphic.uid,
         valid: valid,
         compaction: this.getCompaction(event.graphic.geometry),
-        geometry: event.graphic.geometry.rings
+        geometry: event.graphic.geometry.rings  // TODO - Just Pass Geometry & Update DistrictEdit
       }
 
       let demographicData = await this.getDemographics(event.graphic.geometry)
@@ -231,6 +289,7 @@ export default class Widget extends BaseWidget {
         appActions.widgetStatePropChange('pftp', 'districts', this.districts)
       )
 
+      this.checkActiveGraphic()
     }
 
   }
@@ -249,8 +308,8 @@ export default class Widget extends BaseWidget {
       this.districts.forEach((ed) => {
         if (ed.uid == g.uid) {
           ed.compaction = c,
-          ed.m_DIVINDX_CY = d.m_DIVINDX_CY,
-          ed.m_TOTPOP_FY = d.m_TOTPOP_FY,
+          ed.diversity = d.diversity,
+          ed.population = d.population,
           ed.valid = v
           ed.geometry = g.geometry.rings
         } 
@@ -260,7 +319,11 @@ export default class Widget extends BaseWidget {
         appActions.widgetStatePropChange('pftp', 'districts', this.districts)
       )
 
+      this.checkActiveGraphic()
+
     }
+
+    this.checkActiveGraphic()
 
   }
 
@@ -282,48 +345,97 @@ export default class Widget extends BaseWidget {
 
   componentDidUpdate(prevProps) {
 
-    this.districtsFL.refresh()
+    this.districtsFL.refresh();
 
     if (this.props.submission === true) {
 
-      this.map.add(this.districtsFL, this.map.layers.length + 1)
-      this.map.remove(this.districtGL)
+      this.map.remove(this.districtGL);
 
-      this.districts = []
-      this.districtGL.removeAll()
+      this.districts = [];
+      this.districtGL.removeAll();
       this.props.dispatch(
         appActions.widgetStatePropChange('pftp', 'districts', this.districts)
-      )
+      );
 
-      this.view.ui.remove(this.sketch)
+      this.view.ui.remove(this.sketch);
 
     } else {
 
-      this.map.add(this.districtGL)
-      this.view.ui.add(this.sketch, 'top-right')
+      this.map.add(this.districtGL);
+      this.view.ui.add(this.sketch, 'top-right');
 
     }
 
     // Receive Filter Expression from DistrictView Component within pftp-stats Widget
     if (this.props.districtWhere) {
-        this.districtsFL.definitionExpression = this.props.districtWhere
+        this.districtsFL.definitionExpression = this.props.districtWhere;
+    } else {
+      this.districtsFL.definitionExpression = '1=1';
     }
+
+    this.districtsFL.refresh();
      
   }
+
+  getContacts = () => {
+
+    let query = this.stateContacts.createQuery();
+    query.geometry = new Extent(this.view.extent.toJSON());
+    query.returnGeometry = false;
+    query.outFields = ['Contact_Name', 'Contact_Email', 'Contact_Phone'];
+
+    this.stateContacts.queryFeatures(query).then((resp) => {
+
+        let contacts = resp.features.map(f => f.attributes);
+
+        this.props.dispatch(
+          appActions.widgetStatePropChange('pftp', 'contacts', contacts)
+        );
+
+    }).catch((err) => console.log(err));
+
+}
 
   handleViewChange = () => {
 
     if (this.view.center && this.view.extent) {
-      this.props.dispatch(
-        appActions.widgetStatePropChange('pftp', 'mapView', {
-          x:      this.view.center.x, 
-          y:      this.view.center.y,
-          wkid:   this.view.center.spatialReference.wkid,
-          zoom:   this.view.zoom,
-          extent: this.view.extent.toJSON()
-        })
-      )
+
+      this.getUniqueNames(this.view.extent);
+
+      this.getContacts();
+
+      // if (this.view.center && this.view.extent) {
+      //   this.props.dispatch(
+      //     appActions.widgetStatePropChange('pftp', 'mapView', {
+      //       x:      this.view.center.x, 
+      //       y:      this.view.center.y,
+      //       wkid:   this.view.center.spatialReference.wkid,
+      //       zoom:   this.view.zoom,
+      //       extent: this.view.extent.toJSON()
+      //     })
+      //   )
+      // }
+      
     }
+
+  }
+
+  validateDistrictGeometries = () => {
+
+    // Ensure Any Potentially Valid Districts Are Updated
+
+    this.sketch.layer.graphics.forEach((g) => {
+
+      this.districts.forEach((dg) => {
+        if (dg.uid == g.uid) {
+          dg.valid = this.checkIntersection(g);
+        }
+      })
+    })
+
+    this.props.dispatch(
+      appActions.widgetStatePropChange('pftp', 'districts', this.districts)
+    )
 
   }
 
@@ -337,6 +449,10 @@ export default class Widget extends BaseWidget {
       if (names.length > 0 && !names.includes('District Submissions')) {
         this.sketch.complete()
       }
+
+      
+      this.validateDistrictGeometries()
+
     })
 
   }
@@ -356,9 +472,9 @@ export default class Widget extends BaseWidget {
           breakpoint: false
         }
       }
-    })
+    });
 
-    watchUtils.whenTrue(this.view, 'stationary', this.handleViewChange)
+    watchUtils.whenTrue(this.view, 'stationary', this.handleViewChange);
 
     this.sketch = new Sketch({
       id: 'sketch',
@@ -367,31 +483,46 @@ export default class Widget extends BaseWidget {
       creationMode: "update",
       availableCreateTools: ['polygon'],
       layout: 'vertical'
-    })
-    this.sketch.on('create', this.onCreate)
-    this.sketch.on('update', this.onUpdate)
-    this.sketch.on('delete', this.onDelete)
+    });
+    this.sketch.on('create', this.onCreate);
+    this.sketch.on('update', this.onUpdate);
+    this.sketch.on('delete', this.onDelete);
+
+    this.districtGL.on('click', this.checkActiveGraphic);
 
     const layerList = new LayerList({
       view: this.view
-    })
+    });
 
-    let homeButton = new Home({view: this.view})
-    let locateWidget = new Locate({view: this.view})
+    this.legend = new Legend({
+      view: this.view,
+      layerInfos: [
+        {
+          layer: this.districtsFL,
+          title: "Submissions"
+        },
+        {
+          layer: this.demographicsFL,
+          title: 'Census Tracts 2018'
+        }
+      ]
+    });
 
-    this.view.ui.add(homeButton, 'top-left')
-    this.view.ui.add(locateWidget, 'top-left')
-    this.view.ui.add(layerList, {position: "top-right"})
-    this.view.ui.add(this.sketch, 'top-right')
+    let homeButton = new Home({view: this.view});
+    let locateWidget = new Locate({view: this.view});
 
-    this.view.on('click', this.mapClick)
+    this.view.ui.add(homeButton, 'top-left');
+    this.view.ui.add(locateWidget, 'top-left');
+    this.view.ui.add(layerList, {position: "top-right"});
+    this.view.ui.add(this.sketch, 'top-right');
+    this.view.ui.add(this.legend, 'bottom-left');
+
+    this.view.on('click', this.mapClick);
 
   }
   
   render() {
-    return (
-      <div id="edit-map" style={{height: '100%'}}></div>
-    )
+    return <div id="edit-map" style={{height: '100%'}}></div>
   }
 
 }
