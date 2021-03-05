@@ -14,9 +14,10 @@ export default class ContactTable extends React.Component {
 
             this.props.contacts.forEach((contact) => {
 
-                let name  = contact.Contact_Name
-                let email = contact.Contact_Email
-                let phone = contact.Contact_Phone
+                let name  = contact.your_name;
+                let org   = contact.your_organization;
+                let email = contact.your_email_address;
+                let phone = contact.your_phone_number;
 
                 if (!name && !email && !phone) {
                     // pass
@@ -24,6 +25,7 @@ export default class ContactTable extends React.Component {
                     contactRows.push(
                         <TableRow>
                             <TableCell style={{textAlign: 'center'}}>{name}</TableCell>
+                            <TableCell style={{textAlign: 'center'}}>{org}</TableCell>
                             <TableCell style={{textAlign: 'center'}}>{email}</TableCell>
                             <TableCell style={{textAlign: 'center'}}>{phone}</TableCell>
                         </TableRow>
@@ -52,6 +54,7 @@ export default class ContactTable extends React.Component {
                         <TableHeader>
                             <TableHeaderRow>
                                 <TableHeaderCell style={{textAlign: 'center'}}>Name</TableHeaderCell>
+                                <TableHeaderCell style={{textAlign: 'center'}}>Group</TableHeaderCell>
                                 <TableHeaderCell style={{textAlign: 'center'}}>Email</TableHeaderCell>
                                 <TableHeaderCell style={{textAlign: 'center'}}>Phone</TableHeaderCell>
                             </TableHeaderRow>
