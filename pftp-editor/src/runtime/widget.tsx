@@ -116,7 +116,32 @@ export default class Widget extends BaseWidget {
     });
 
     this.stateContacts = new FeatureLayer({
-      url: this.props.config.stateContactsURL
+      url: this.props.config.stateContactsURL,
+      visible: false,
+      title: 'State Contacts',
+      renderer: {
+        type: "simple", 
+        symbol: {
+          type: "simple-marker",
+          size: 15,
+          color: "white"
+        }
+      },
+      labelingInfo: [{
+        labelExpressionInfo: {
+          expression: "$feature.your_name + ' @ ' + $feature.your_organization"
+        },
+        labelPlacement: "above-center",
+        symbol: {
+          type: "text",
+          font: {
+            size: 11,
+            family: "Noto Sans"
+          },
+          horizontalAlignment: "left",
+          color: "white"
+        }
+      }]
     });
 
     this.districtFL = new FeatureLayer({
@@ -135,8 +160,13 @@ export default class Widget extends BaseWidget {
     });
 
     this.map = new Map({
-      basemap: "dark-gray",
-      layers: [this.demographicsFL, this.districtsFL, this.districtGL]
+      basemap: "dark-gray-vector",
+      layers: [
+        this.demographicsFL, 
+        this.stateContacts,
+        this.districtsFL, 
+        this.districtGL
+      ]
     });
 
     this.valid = {
@@ -379,10 +409,17 @@ export default class Widget extends BaseWidget {
 
   getContacts = () => {
 
+    console.log(this.props.config.stateContactsURL)
+
     let query = this.stateContacts.createQuery();
     query.geometry = new Extent(this.view.extent.toJSON());
     query.returnGeometry = false;
-    query.outFields = ['Contact_Name', 'Contact_Email', 'Contact_Phone'];
+    query.outFields = [
+      'your_name', 
+      'your_organization',
+      'your_phone_number', 
+      'your_email_address'
+    ];
 
     this.stateContacts.queryFeatures(query).then((resp) => {
 
