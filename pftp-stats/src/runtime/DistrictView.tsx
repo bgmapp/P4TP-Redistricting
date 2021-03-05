@@ -91,7 +91,7 @@ export default class DistrictView extends BaseWidget {
             <div>
 
                 <div style={{marginBottom: '50px'}}>
-                    <ContactTable contacts={this.props.data.contacts} />
+                    <ContactTable contacts={this.props.data.contacts} surveyUrl={this.props.data.config.survey123URL} />
                 </div>
 
                 {message}

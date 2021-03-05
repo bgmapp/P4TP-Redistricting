@@ -38,8 +38,8 @@ export default class ContactTable extends React.Component {
 
             return(
                 <CalciteP style={{textAlign: 'center', margin: 0}}>
-                    No contacts found in this extent. If you know of a good place to forward this content, please submit a response to 
-                    this <a href="survey123">survey</a>.
+                    No contacts found in the current extent. If you know of a good place to forward information about your
+                    community of interest, please submit a response to this <a href={this.props.surveyUrl} target="_blank">survey</a>.
                 </CalciteP>
             )
 
@@ -60,6 +60,11 @@ export default class ContactTable extends React.Component {
                             {contactRows}
                         </TableBody>
                     </Table>
+                    <CalciteP style={{textAlign: 'center', margin: 0}}>
+                        Didn't see someone that should be on this list? Please submit a response to 
+                        this <a href={this.props.surveyUrl} target="_blank">survey</a> and we will make
+                        sure they appear next time around.
+                    </CalciteP>
                 </div>
             )
 

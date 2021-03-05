@@ -16,30 +16,6 @@
     "layout_0": {
       "type": "FIXED",
       "content": {
-        "1": {
-          "type": "WIDGET",
-          "bbox": {
-            "left": 0,
-            "top": 0,
-            "width": "37.5769%",
-            "height": "100.0000%",
-            "right": "62.4231%",
-            "bottom": 0
-          },
-          "widgetId": "widget_2",
-          "setting": {
-            "autoProps": {
-              "left": false,
-              "right": true,
-              "bottom": false,
-              "top": false,
-              "height": true
-            },
-            "order": 0,
-            "lockParent": false,
-            "lockLayout": false
-          }
-        },
         "2": {
           "type": "WIDGET",
           "bbox": {
@@ -63,11 +39,38 @@
             "lockParent": false,
             "lockLayout": false
           }
+        },
+        "3": {
+          "type": "WIDGET",
+          "bbox": {
+            "left": 0,
+            "top": 0,
+            "width": "37.8882%",
+            "height": "100.0000%",
+            "bottom": 0,
+            "right": "795px"
+          },
+          "widgetId": "widget_4",
+          "setting": {
+            "autoProps": {
+              "right": true,
+              "left": false,
+              "bottom": false,
+              "top": false,
+              "height": true
+            },
+            "vCenter": false,
+            "hCenter": false,
+            "order": 0,
+            "lockParent": false,
+            "lockLayout": false
+          },
+          "isPending": false
         }
       },
       "order": [
-        "1",
-        "2"
+        "2",
+        "3"
       ]
     }
   },
@@ -188,16 +191,6 @@
     }
   },
   "widgets": {
-    "widget_2": {
-      "uri": "widgets/pftp-stats/",
-      "version": "1.0.0",
-      "label": "pftp-stats 1",
-      "config": {
-        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
-        "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
-      },
-      "id": "widget_2"
-    },
     "widget_3": {
       "uri": "widgets/pftp-editor/",
       "version": "1.0.0",
@@ -208,6 +201,16 @@
         "stateContactsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/arcgis/rest/services/States/FeatureServer/0"
       },
       "id": "widget_3"
+    },
+    "widget_4": {
+      "uri": "widgets/pftp-stats/",
+      "version": "1.0.0",
+      "label": "pftp-stats 1",
+      "config": {
+        "editDistrictsURL": "https://services9.arcgis.com/q5uyFfTZo3LFL04P/ArcGIS/rest/services/User_Districts/FeatureServer/0",
+        "survey123URL": "https://arcg.is/bGnuf"
+      },
+      "id": "widget_4"
     }
   },
   "widgetsManifest": {},
