@@ -37,7 +37,7 @@ export default class DistrictFilter extends BaseWidget {
 
         let menuItems = undefined
 
-        if (this.props.data.uniqueNames < 1) {
+        if (this.props.data.uniqueNames === undefined || this.props.data.uniqueNames < 1) {
             return <div style={{textAlign: 'center'}}><CalciteP value="ALL">No Submissions in Current Extent</CalciteP></div>
         } 
 
